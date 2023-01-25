@@ -1,26 +1,28 @@
-import math
-
 import pygame
-from pygame import KEYDOWN
 
-import config
 from Attack import Attack_sword
+from Draw_Text_on_Sprite import Draw_Text
 from Sprite_sheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, enemies_sprites, obstacle_sprites, scaled):
+    def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
+        self.font = pygame.font.Font('assets/shrift.ttf', -10)
+        self.vis_sp = groups[0]
         self.character_spritesheet = Spritesheet('assets/player.png')
         self.image = self.character_spritesheet.get_sprite(10, 2, 13, 28).convert_alpha()
-        self.enemies_sprites = enemies_sprites
         self.is_anim = False
-        #self.image = pygame.transform.smoothscale(self.image, (self.image.get_size()[0] * scaled, self.image.get_size()[1] * scaled)).convert_alpha()
+        self.id = 'player'
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(0, -15)
+        self.old_dir = pygame.math.Vector2(1, 0)
         self.direction = pygame.math.Vector2()
         self.speed = 4
         self.HP = 20
+        self.maximum_health = 20
+        self.health_bar_length = 20
+        self.health_ratio = self.maximum_health / self.health_bar_length
 
         self.right_walk = [self.character_spritesheet.get_sprite(9, 34, 13, 28),
                            self.character_spritesheet.get_sprite(9, 66, 13, 28),
@@ -30,9 +32,10 @@ class Player(pygame.sprite.Sprite):
                           self.character_spritesheet.get_sprite(9, 162, 13, 28),
                           self.character_spritesheet.get_sprite(9, 98, 13, 28)]
         self.current_sprite = 0
-        self.attack = Attack_sword()
         self.sprites_anim = []
         self.obstacle_sprites = obstacle_sprites
+        self.sprite_text = Draw_Text(groups, 'I am alive', self)
+        self.attack = Attack_sword(groups, self)
 
     def animate(self):
         self.current_sprite += 0.2
@@ -45,8 +48,8 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         self.is_anim = True
 
-        #if keys[pygame.K_SPACE]:
-        #    self.attack.update(self)
+        if keys[pygame.K_SPACE]:
+            self.attack.is_start = True
 
         if keys[pygame.K_w]:
             self.direction.y = -1
@@ -54,6 +57,13 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 1
         else:
             self.direction.y = 0
+
+        if keys[pygame.K_e]:
+            for sprite in list(filter(lambda sprite: sprite.id == 'chest', self.obstacle_sprites)):
+                if sprite.rect.colliderect(self.hitbox):
+                    sprite.isopen = False
+                    print('open_chest', sprite.rect)
+                    self.sprite_text.update_text('stonks+++++++++++++++', 'yellow')
 
         if keys[pygame.K_d]:
             self.direction.x = 1
@@ -65,6 +75,8 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
             self.current_sprite = 2
             self.is_anim = False
+        if self.direction.x != 0:
+            self.old_dir = self.direction
 
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -82,9 +94,9 @@ class Player(pygame.sprite.Sprite):
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0:
-                        self.hitbox.right = sprite.hitbox.left
+                        self.hitbox.right = sprite.rect.left
                     if self.direction.x < 0:
-                        self.hitbox.left = sprite.hitbox.right
+                        self.hitbox.left = sprite.rect.right
 
         if direction == 'vertical':
             for sprite in self.obstacle_sprites:
@@ -94,20 +106,7 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
 
-    def collision_enemy(self):
-        for sprite in self.enemies_sprites:
-            if sprite.hitbox.colliderect(self.hitbox):
-                if self.direction.x > 0:
-                    self.hitbox.right = sprite.hitbox.left
-                if self.direction.x < 0:
-                    self.hitbox.left = sprite.hitbox.right
-                self.HP -= 10
-                print(self.HP)
-            if self.HP <= 0:
-                self.kill()
-
     def update(self):
         self.input()
         self.move(self.speed)
-        self.collision_enemy()
         self.animate()

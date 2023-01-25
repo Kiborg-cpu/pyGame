@@ -20,7 +20,7 @@ class all_camera_sprites(pygame.sprite.Group):
         self.keyboard_speed = 5
         self.mouse_speed = 0.4
 
-        self.zoom_scale = 1
+        self.zoom_scale = 2
         self.internal_surf_size = (640, 480)
         self.internal_surface = pygame.Surface(self.internal_surf_size, pygame.SRCALPHA)
         self.internal_rect = self.internal_surface.get_rect(center=(self.half_w, self.half_h))
@@ -72,13 +72,14 @@ class all_camera_sprites(pygame.sprite.Group):
         self.offset += mouse_offset_vector * self.mouse_speed
 
     def custom_draw(self, player):
-        # self.keyboard_control()
+        self.keyboard_control()
         self.center_target_camera(player)
         self.scrol()
         # self.mouse_control()
         self.internal_surface.fill(config.BLACK)
         # self.box_target_camera(self.game.player)
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
+        for sprite in sorted(self.sprites(), key=lambda sprite: (sprite.id != 'ground', sprite.id == 'attack' or sprite.id == 'text',
+                                                                 sprite.rect.centery)):
             offset_pos = sprite.rect.topleft - self.offset + self.internal_offset
             self.internal_surface.blit(sprite.image, offset_pos)
         # pygame.draw.rect(self.display_surface, 'yellow', self.camera_rect, 5)
@@ -120,11 +121,11 @@ class all_camera_sprites(pygame.sprite.Group):
     def scrol(self):
         keys = pygame.key.get_pressed()
 
-        #if keys[pygame.K_SPACE]:
+        # if keys[pygame.K_SPACE]:
         #    Attack(self, self.player.rect.x + 20, self.player.rect.y)
-        if keys[pygame.K_q]:
+        if keys[pygame.K_x]:
             self.zoom_scale += 0.1
-        if keys[pygame.K_e]:
+        if keys[pygame.K_z]:
             self.zoom_scale -= 0.1
         if self.zoom_scale < 0:
             self.zoom_scale = 0
