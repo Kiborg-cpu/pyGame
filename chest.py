@@ -14,7 +14,7 @@ class Chest(pygame.sprite.Sprite):
         self.id = 'chest'
         self.animation_loop = 0
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(-3, -14)
+        self.hitbox = self.rect.inflate(-12, -14)
         self.isopen = True
         self.is_anim = True
 
@@ -23,9 +23,9 @@ class Chest(pygame.sprite.Sprite):
             if not self.anim_open.index(self.image) == int(self.animation_loop):
                 self.image = self.anim_open[int(self.animation_loop)]
                 if int(self.animation_loop) >= 1:
-                    self.rect.y = self.rect.y - (self.anim_open[int(self.animation_loop)].get_size()[1] - \
-                                  self.anim_open[int(self.animation_loop) - 1].get_size()[1])
-                    self.rect.x = self.rect.x - (self.anim_open[int(self.animation_loop)].get_size()[0] - \
+                    self.rect.y = self.rect.y - (self.anim_open[int(self.animation_loop)].get_size()[1] -
+                                                 self.anim_open[int(self.animation_loop) - 1].get_size()[1])
+                    self.rect.x = self.rect.x - (self.anim_open[int(self.animation_loop)].get_size()[0] -
                                                  self.anim_open[int(self.animation_loop) - 1].get_size()[0])
             self.animation_loop += 0.2
             if self.animation_loop >= len(self.anim_open):

@@ -78,7 +78,8 @@ class all_camera_sprites(pygame.sprite.Group):
         # self.mouse_control()
         self.internal_surface.fill(config.BLACK)
         # self.box_target_camera(self.game.player)
-        for sprite in sorted(self.sprites(), key=lambda sprite: (sprite.id != 'ground', sprite.id == 'attack' or sprite.id == 'text',
+        for sprite in sorted(self.sprites(), key=lambda sprite: (sprite.id != 'ground', sprite.id != 'plita',
+                                                                 sprite.id == 'attack' or sprite.id == 'text',
                                                                  sprite.rect.centery)):
             offset_pos = sprite.rect.topleft - self.offset + self.internal_offset
             self.internal_surface.blit(sprite.image, offset_pos)

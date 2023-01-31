@@ -5,39 +5,42 @@ from Draw_Text_on_Sprite import Draw_Text
 from Sprite_sheet import Spritesheet
 
 
-class Enemy(pygame.sprite.Sprite):
+class Blue_Magician(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
         self.obstacle_sprites = obstacle_sprites
-        self.enemy_spritesheet = Spritesheet('assets/skeleton.png')
+        self.magician_blue = Spritesheet('assets/Magician_Blue.png')
         self.animation_loop = 1
         self.id = 'enemy'
         self.old_dir = pygame.math.Vector2(0, 0)
         self.player = None
         self.collision_arr = [False] * 9
         self.direction_text = ''
-        self.move_animations = [self.enemy_spritesheet.get_sprite(11, 37, 13, 27),
-                                self.enemy_spritesheet.get_sprite(11, 69, 13, 27)]
+        self.direction_anim = [self.magician_blue.get_sprite(8, 3, 14, 26),
+                               self.magician_blue.get_sprite(10, 34, 14, 26)]
+        self.dir_anim_el = 0
         self.max_travel = random.randint(7, 50)
-        self.image = self.enemy_spritesheet.get_sprite(11, 5, 9, 27)
+        self.image = self.direction_anim[0]
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.math.Vector2(random.choice([-1, 1]), 0)
+        if self.direction.x > 0:
+            self.image = self.direction_anim[0]
+        else:
+            self.image = self.direction_anim[1]
         self.hitbox = self.rect.inflate(0, -19)
         self.speed = 1
         self.hp = 200
-        self.sprite_text = Draw_Text(groups[0], f'Skeleton: {self.hp}HP ', self)
+        self.sprite_text = Draw_Text(groups[0], f'Magician: {self.hp}HP ', self)
         self.gambits = 0
 
     def update(self):
         self.move(self.speed)
-        self.animate()
         if self.hp <= 0:
-            self.sprite_text.remove_text()
             self.kill()
 
     def setdamage(self, damage, player):
         self.hp -= damage
-        self.sprite_text.update_text(f'Skeleton: {self.hp}HP', 'red')
+        self.sprite_text.update_text(f'Magician: {self.hp}HP', 'blue')
         self.player = player
         self.move_towards_player(player)
 
@@ -45,12 +48,11 @@ class Enemy(pygame.sprite.Sprite):
         if self.player is None:
             if self.direction.magnitude() != 0:
                 self.direction = self.direction.normalize()
-
             self.hitbox.x -= self.direction.x * speed
             self.gambits += 1
             if self.gambits >= self.max_travel:
                 self.direction.x *= -1
-                # self.image = self.move_animations[]
+                self.change_image_direction()
                 self.old_dir = self.direction
                 self.gambits = 0
         else:
@@ -58,12 +60,21 @@ class Enemy(pygame.sprite.Sprite):
             self.collision()
         self.rect.center = self.hitbox.center
 
+    def change_image_direction(self):
+        self.dir_anim_el = 0 if self.dir_anim_el >= len(self.direction_anim) - 1 else self.dir_anim_el + 1
+        print(self.dir_anim_el)
+        self.image = self.direction_anim[self.dir_anim_el]
+
     def move_towards_player(self, player):
         self.dirvect = pygame.math.Vector2(player.hitbox.centerx - self.hitbox.centerx,
                                            player.hitbox.centery - self.hitbox.centery)
         if self.dirvect.magnitude() != 0:
             self.dirvect.normalize()
             self.dirvect.scale_to_length(3)
+        if self.dirvect.x > 0:
+            self.image = self.direction_anim[0]
+        else:
+            self.image = self.direction_anim[1]
         self.hitbox.move_ip(self.dirvect)
 
     def collision(self):
@@ -99,22 +110,14 @@ class Enemy(pygame.sprite.Sprite):
         if self.collision_arr[0] or self.collision_arr[2] or self.collision_arr[4]:
             self.direction_text += "left "
 
-        elif self.collision_arr[1] or self.collision_arr[3] or self.collision_arr[5]:
+        if self.collision_arr[1] or self.collision_arr[3] or self.collision_arr[5]:
             self.direction_text += "right "
 
         if self.collision_arr[0] or self.collision_arr[1] or self.collision_arr[6]:
             self.direction_text += "top "
 
-        elif self.collision_arr[2] or self.collision_arr[3] or self.collision_arr[7]:
+        if self.collision_arr[2] or self.collision_arr[3] or self.collision_arr[7]:
             self.direction_text += "bottom "
 
-        # if self.collision_arr[8]:
-        #    self.direction_text += "center "
-
-        print(self.direction_text)
-
-    def animate(self):
-        self.image = self.move_animations[int(self.animation_loop)]
-        self.animation_loop += 0.2
-        if self.animation_loop >= len(self.move_animations):
-            self.animation_loop = 0
+        if self.collision_arr[8]:
+            self.direction_text += "center "

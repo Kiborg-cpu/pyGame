@@ -1,5 +1,4 @@
 import pygame
-import config
 
 
 class Tile(pygame.sprite.Sprite):
@@ -9,3 +8,6 @@ class Tile(pygame.sprite.Sprite):
         self.id = 'tile'
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -14)
+
+    def update(self):
+        self.rect.center = self.hitbox.center

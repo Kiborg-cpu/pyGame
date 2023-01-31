@@ -28,6 +28,7 @@ class Attack_sword(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.animation_loop = 0
         self.is_start = False
+        self.hitbox = self.rect.inflate(0, -1)
         # self.hitbox = self.rect.inflate(0, -17)
 
     def update(self):
@@ -39,27 +40,28 @@ class Attack_sword(pygame.sprite.Sprite):
                 self.sword_anim = self.sword_anim_right
                 self.old_dir = 1
                 if self.animation_loop >= 1:
-                    self.rect.topleft = self.player.rect.midright
+                    self.hitbox.topleft = self.player.rect.midright
                 else:
-                    self.rect.topleft = self.player.rect.midleft
+                    self.hitbox.topleft = self.player.rect.midleft
             elif self.player.direction.x == -1 or self.player.old_dir.x == -1:
                 self.sword_anim = self.sword_anim_left
                 self.old_dir = -1
                 if self.animation_loop >= 1:
-                    self.rect.topright = self.player.rect.midleft
+                    self.hitbox.topright = self.player.rect.midleft
                 else:
-                    self.rect.topright = self.player.rect.midright
+                    self.hitbox.topright = self.player.rect.midright
             self.collide()
         else:
 
             if self.player.direction.x == 1 or self.player.old_dir.x == 1:
                 self.sword_anim = self.sword_anim_right
                 self.old_dir = 1
-                self.rect.topleft = self.player.rect.midleft
+                self.hitbox.topleft = self.player.rect.midleft
             elif self.player.direction.x == -1 or self.player.old_dir.x == -1:
                 self.sword_anim = self.sword_anim_left
                 self.old_dir = -1
-                self.rect.topright = self.player.rect.midright
+                self.hitbox.topright = self.player.rect.midright
+        self.rect.center = self.hitbox.center
 
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.enemy, False)

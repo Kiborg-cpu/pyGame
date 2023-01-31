@@ -14,8 +14,9 @@ class UI:
         img = self.font.render(str(curr_hp), True, 'White')
         self.dis.blit(img, (18, 21))
 
-    def debug(self, zoomsc, attack):
+    def debug(self, zoomsc, attack, fps):
         img = self.font.render('zoom: '+str(zoomsc), True, 'White')
-        attack_pl = self.font.render('att_coord: ' + str(attack), True, 'White')
-        self.dis.blit(attack_pl, (400, 21))
+        #attack_pl = self.font.render('att_coord: ' + str(attack), True, 'White')
+        fps = self.font.render('FPS: ' + str(fps), True, 'White')
+        self.dis.blit(fps, (400, 21))
 

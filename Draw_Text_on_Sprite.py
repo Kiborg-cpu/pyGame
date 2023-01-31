@@ -15,6 +15,7 @@ class Draw_Text(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self.image.get_size()[0] // 2, self.image.get_size()[1] // 2))
         self.rect = self.image.get_rect(bottomleft=(self.player.rect.topleft[0], self.player.rect.topleft[1] - 5))
         self.start_ticks = pygame.time.get_ticks()
+        self.hitbox = self.rect.inflate(0, 3)
 
     def update(self):
         if self.color == 'white':
@@ -30,9 +31,9 @@ class Draw_Text(pygame.sprite.Sprite):
         else:
             self.rect.y -= 5
         seconds = (pygame.time.get_ticks() - self.start_ticks) / 1000  # calculate how many seconds
-        print(seconds)
-        if seconds >= 3:
-            self.image.fill((0, 0, 0, 0))
+        # print(seconds)
+        #if seconds >= 3:
+        #    self.image.fill((0, 0, 0, 0))
 
     def update_text(self, text, color):
         self.color = color
@@ -40,5 +41,9 @@ class Draw_Text(pygame.sprite.Sprite):
         self.font = pygame.font.Font('assets/shrift.ttf', 18)
         self.image = self.font.render(self.text, True, self.color)
         self.image = pygame.transform.scale(self.image, (self.image.get_size()[0] // 2, self.image.get_size()[1] // 2))
-        self.rect = self.image.get_rect(bottomleft=(self.player.rect.topleft[0] - random.randrange(0, 10), self.player.rect.topleft[1] - random.randrange(0, 10)))
+        self.rect = self.image.get_rect(bottomleft=(
+        self.player.rect.topleft[0] - random.randrange(0, 10), self.player.rect.topleft[1] - random.randrange(0, 10)))
         self.start_ticks = pygame.time.get_ticks()
+
+    def remove_text(self):
+        self.kill()
