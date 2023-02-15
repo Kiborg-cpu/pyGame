@@ -110,9 +110,6 @@ class Enemy(pygame.sprite.Sprite):
 
         # if self.collision_arr[8]:
         #    self.direction_text += "center "
-
-        print(self.direction_text)
-
     def animate(self):
         self.image = self.move_animations[int(self.animation_loop)]
         self.animation_loop += 0.2

@@ -17,14 +17,14 @@ BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 
 tilemap = [
-            'BBBBBBBBBBBBBBBBBBBBBBBBBB                             ',
-            'BBBBBB.E..............BBBB                             ',
-            'BBBB............M.....BBBB                             ',
-            'BBBB..................BBBBBBBBBBBBBBBBBBBB                        ',
-            'BBBB........P.......C.R........                        ',
-            'BBBB..................BBBBBBBBBBBBBBBBBBBB                        ',
-            'BBBB..................BBBB                             ',
-            'BBBB..................BBBB                             ',
-            'BBBB..........E.......BBBB                             ',
-            'BBBBBBBBBBBBBBBBBBBBBBBBBB                             '
+            'BBBBBBBBBBBBBBBBBBBBBBBBBB                BBBBBBBBBBBBBBB',
+            'BBBBBB.E..............BBBB                B       C     B',
+            'BBBB............M.....BBBB                B             B',
+            'BBBB..................BBBBBBBBBBBBBBBBBBBBB             B',
+            'BBBB........P..t....C.R..................               B',
+            'BBBB..................BBBBBBBBBBBBBBBBBBBBB             B',
+            'BBBB..................BBBB                B       C     B',
+            'BBBB..................BBBB                BBBBBBBBBBBBBBB',
+            'BBBB..........E.......BBBB                               ',
+            'BBBBBBBBBBBBBBBBBBBBBBBBBB                               '
 ]

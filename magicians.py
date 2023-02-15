@@ -62,7 +62,6 @@ class Blue_Magician(pygame.sprite.Sprite):
 
     def change_image_direction(self):
         self.dir_anim_el = 0 if self.dir_anim_el >= len(self.direction_anim) - 1 else self.dir_anim_el + 1
-        print(self.dir_anim_el)
         self.image = self.direction_anim[self.dir_anim_el]
 
     def move_towards_player(self, player):
